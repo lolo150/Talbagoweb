@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Liste des Utilisateurs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function confirmDelete(userId) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+                // Utiliser JavaScript pour soumettre le formulaire de suppression
+                document.getElementById('delete-form-' + userId).submit();
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-8">
+<h1 class="text-2xl font-bold mb-4">Liste des Utilisateurs</h1>
+<a href="/users/ajouter" class="bg-blue-500 text-white px-4 py-2 rounded">Ajouter un Utilisateur</a>
+<table class="w-full mt-4 border-collapse">
+    <tr class="bg-gray-200">
+        <th class="border p-2">ID</th>
+        <th class="border p-2">Nom</th>
+        <th class="border p-2">Email</th>
+        <th class="border p-2">Rôle</th>
+        <th class="border p-2">Actions</th>
+    </tr>
+    <tr th:each="user : ${users}" class="bg-white border">
+        <td class="border p-2" th:text="${user.id}"></td>
+        <td class="border p-2" th:text="${user.nom}"></td>
+        <td class="border p-2" th:text="${user.email}"></td>
+        <td class="border p-2" th:text="${user.role}"></td>
+        <td class="border p-2" th:text="${user.dateInscription}"></td>
+
+        <td class="border p-2">
+            <button th:onclick="'confirmDelete(' + ${user.id} + ')'" class="bg-red-500 text-white px-4 py-2 rounded">Supprimer</button>
+            <form id="delete-form-${user.id}" action="/users/delete/${user.id}" method="post" style="display: none;">
+                <!-- CSRF token for Spring Security -->
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <input type="hidden" name="_method" value="delete" />
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
